@@ -1,5 +1,7 @@
 import random
 import numpy
+import matplotlib.pyplot as plt
+
 from deap import base, creator, tools
 
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
@@ -7,10 +9,26 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 
 ciudades=[]
 
-IND_SIZE=10  # tamaño del individuo. 
+IND_SIZE=10# tamaño del individuo. 
+plt.figure()
+x=0
+y=0
 
 for g in range(IND_SIZE):
-    ciudades.append(complex(random.randint(1,100),random.randint(1,100)))
+    x=random.randint(1,40)
+    y=random.randint(1,40)
+    ciudades.append(complex(x,y))
+    plt.subplot(2,2,1)
+    plt.plot(x,y,'bo')
+    plt.annotate('Ciudad {0}'.format(g),xy=(x,y))
+    plt.subplot(2,2,2)
+    plt.plot(x,y,'bo')    
+    plt.annotate('Ciudad {0}'.format(g),xy=(x,y))
+
+for z in range(IND_SIZE):
+    print("Ciudad", z, " -> ", ciudades[z], "\n")
+    
+    
 
 toolbox = base.Toolbox()
 toolbox.register("attr_float", numpy.random.permutation,IND_SIZE)
@@ -22,8 +40,10 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 def evaluate(individual):
     dis=0
-    for i in range(IND_SIZE-1):
-        dis+=abs(ciudades[individual[i]]- ciudades[individual[i+1]])
+    k=individual[0]
+    for i in individual[1:]:
+        dis+=abs(ciudades[i]- ciudades[k])
+        k=i
     return dis,
 
 toolbox.register("mate", tools.cxOrdered)  # Cruce en dos puntos
@@ -33,7 +53,7 @@ toolbox.register("evaluate", evaluate)
 
 def main(pop):
     
-    CXPB, MUTPB, NGEN = 0.5, 0.2, 40
+    CXPB, MUTPB, NGEN = 0.5, 0.2, 80
     
     
     # Evaluate the entire population
@@ -78,7 +98,27 @@ for k, i in enumerate(pop):
     print("Ind:",k, "->", i, " Distancia= ",evaluate(i))
     
 result = main(pop)
-
+mejor=0
+primero=0
+segundo=0
 print("-------------------------------")
 for k, i in enumerate(result):
-    print("Ind:",k, "->", i, " Distancia= ",evaluate(i))
+    if(k==0):
+        mejor=i
+        primero=evaluate(i)
+        print("Ind:",k, "->", i, " Distancia= ",primero)
+    else:
+        segundo=evaluate(i)
+        if(primero>segundo):
+            primero=segundo
+            mejor=i
+        print("Ind:",k, "->", i, " Distancia= ",segundo)
+    
+
+length=len(mejor)
+l=1
+print(mejor)
+plt.plot((ciudades[0].real,ciudades[0].imag),(ciudades[1].real,ciudades[1].imag))
+#for l in range(length):
+ #   plt.plot((ciudades[mejor[l-1]].real,ciudades[mejor[l-1]].imag),(ciudades[mejor[l-1]].real,ciudades[mejor[l-1]].imag),"r")
+plt.show()
