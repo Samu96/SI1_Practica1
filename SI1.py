@@ -18,17 +18,22 @@ for g in range(IND_SIZE):
     x=random.randint(1,40)
     y=random.randint(1,40)
     ciudades.append(complex(x,y))
-    plt.subplot(2,2,1)
+    plt.subplot(2,2,1)  #Ciudades
     plt.plot(x,y,'bo')
-    plt.annotate('Ciudad {0}'.format(g),xy=(x,y))
-    plt.subplot(2,2,2)
+    plt.annotate('Ciudad {0}'.format(g),xy=(x,y),xytext=(x-2,y+2))
+    plt.subplot(2,2,2)  #Ruta Optima
     plt.plot(x,y,'bo')    
-    plt.annotate('Ciudad {0}'.format(g),xy=(x,y))
+    plt.annotate('Ciudad {0}'.format(g),xy=(x,y),xytext=(x-2,y+2))
 
 for z in range(IND_SIZE):
     print("Ciudad", z, " -> ", ciudades[z], "\n")
     
-    
+
+plt.subplot(2,2,1)
+plt.title("Ciudades")
+plt.subplot(2,2,2)
+plt.title("Ciudades con Ruta")
+
 
 toolbox = base.Toolbox()
 toolbox.register("attr_float", numpy.random.permutation,IND_SIZE)
@@ -118,7 +123,10 @@ for k, i in enumerate(result):
 length=len(mejor)
 l=1
 print(mejor)
-plt.plot((ciudades[0].real,ciudades[0].imag),(ciudades[1].real,ciudades[1].imag))
-#for l in range(length):
+#plt.plot((ciudades[0].real,ciudades[0].imag),(ciudades[1].real,ciudades[1].imag))
+
+for l in range(length):
  #   plt.plot((ciudades[mejor[l-1]].real,ciudades[mejor[l-1]].imag),(ciudades[mejor[l-1]].real,ciudades[mejor[l-1]].imag),"r")
+ plt.annotate("",xy=(ciudades[mejor[l-1]].real,ciudades[mejor[l-1]].imag),xycoords='data',xytext=(ciudades[mejor[l]].real,ciudades[mejor[l]].imag), textcoords='data',
+                 arrowprops=dict(arrowstyle="<-",color="0.8"))
 plt.show()
